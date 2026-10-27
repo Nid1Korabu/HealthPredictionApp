@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Prediction App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+
+        <header>
+            <h1>Health Prediction App</h1>
+            <p>Manage patient records and review AI-generated health remarks.</p>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <section class="form-section">
+            <h2>Add Patient Record</h2>
+
+            <form action="{{ url_for('add_patient') }}" method="POST">
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="full_name">Full Name</label>
+                        <input type="text" id="full_name" name="full_name"
+                               placeholder="Enter full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dob">Date of Birth (dd/mm/yyyy)</label>
+                        <input type="text" id="dob" name="dob"
+                               placeholder="dd/mm/yyyy" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="text" id="email" name="email"
+                               placeholder="Enter email address" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="glucose">Glucose</label>
+                        <input type="number" id="glucose" name="glucose"
+                               step="any" min="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="haemoglobin">Haemoglobin</label>
+                        <input type="number" id="haemoglobin" name="haemoglobin"
+                               step="any" min="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cholesterol">Cholesterol</label>
+                        <input type="number" id="cholesterol" name="cholesterol"
+                               step="any" min="0.01" required>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn">Add Patient</button>
+            </form>
+        </section>
+
+        <section class="records-section">
+            <h2>Patient Records</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Full Name</th>
+                            <th>Date of Birth</th>
+                            <th>Email</th>
+                            <th>Glucose</th>
+                            <th>Haemoglobin</th>
+                            <th>Cholesterol</th>
+                            <th>AI Remarks</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for patient in patients %}
+                        <tr>
+                            <td>{{ patient.id }}</td>
+                            <td>{{ patient.full_name }}</td>
+                            <td>{{ patient.dob }}</td>
+                            <td>{{ patient.email }}</td>
+                            <td>{{ patient.glucose }}</td>
+                            <td>{{ patient.haemoglobin }}</td>
+                            <td>{{ patient.cholesterol }}</td>
+                            <td class="remarks-cell">{{ patient.remarks }}</td>
+
+                            <td>
+                                <div class="actions">
+
+                                    <a class="btn edit-btn"
+                                       href="{{ url_for('edit_patient', patient_id=patient.id) }}">
+                                        Edit
+                                    </a>
+
+                                    <form action="{{ url_for('analyze_patient', patient_id=patient.id) }}"
+                                          method="POST">
+                                        <button type="submit" class="btn analyze-btn">
+                                            Generate AI Remarks
+                                        </button>
+                                    </form>
+
+                                    <form action="{{ url_for('delete_patient', patient_id=patient.id) }}"
+                                          method="POST"
+                                          onsubmit="return confirm('Are you sure you want to delete this patient record?');">
+                                        <button type="submit" class="btn delete-btn">
+                                            Delete
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </td>
+                        </tr>
+
+                        {% else %}
+                        <tr>
+                            <td colspan="9" class="empty-message">
+                                No patient records available yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <p class="disclaimer">
+            AI remarks are for educational purposes only and are not a medical diagnosis.
+            Laboratory units, reference ranges, and clinical context are needed for proper interpretation.
+        </p>
+
+    </div>
+</body>
+</html>

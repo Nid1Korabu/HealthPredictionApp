@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Patient Record</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+
+        <header>
+            <h1>Edit Patient Record</h1>
+            <p>Update the selected patient's information.</p>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <section class="form-section">
+            <form action="{{ url_for('edit_patient', patient_id=patient.id) }}"
+                  method="POST">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="full_name">Full Name</label>
+                        <input type="text" id="full_name" name="full_name"
+                               value="{{ patient.full_name }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dob">Date of Birth (dd/mm/yyyy)</label>
+                        <input type="text" id="dob" name="dob"
+                               value="{{ patient.dob }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="text" id="email" name="email"
+                               value="{{ patient.email }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="glucose">Glucose</label>
+                        <input type="number" id="glucose" name="glucose"
+                               value="{{ patient.glucose }}" step="any"
+                               min="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="haemoglobin">Haemoglobin</label>
+                        <input type="number" id="haemoglobin" name="haemoglobin"
+                               value="{{ patient.haemoglobin }}" step="any"
+                               min="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cholesterol">Cholesterol</label>
+                        <input type="number" id="cholesterol" name="cholesterol"
+                               value="{{ patient.cholesterol }}" step="any"
+                               min="0.01" required>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn">Save Changes</button>
+                <a href="{{ url_for('home') }}" class="btn cancel-btn">
+                    Cancel
+                </a>
+
+            </form>
+        </section>
+
+    </div>
+</body>
+</html>
